@@ -18,7 +18,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "create-HCS-topic": "esrun scripts/create-HCS-topic.ts"
+    "create-HCS-topic" : "esrun scripts/create-HCS-topic.ts",
+    "test-SDK": "esrun ./test/index.ts"
   },
   "eslintConfig": {
     "extends": [
@@ -40,6 +41,7 @@
   },
   "devDependencies": {
     "@digitak/esrun": "^3.2.24",
+    "@ethersproject/abi": "^5.7.0",
     "@hashgraph/sdk": "^2.32.0",
     "@typechain/ethers-v6": "^0.4.3",
     "@types/jest": "^27.5.2",

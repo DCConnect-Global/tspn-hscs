@@ -37,6 +37,9 @@ devDependencies:
   '@digitak/esrun':
     specifier: ^3.2.24
     version: 3.2.24
+  '@ethersproject/abi':
+    specifier: ^5.7.0
+    version: 5.7.0
   '@hashgraph/sdk':
     specifier: ^2.32.0
     version: 2.32.0
