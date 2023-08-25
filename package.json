@@ -19,7 +19,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "create-HCS-topic" : "esrun scripts/create-HCS-topic.ts",
-    "test-SDK": "esrun ./test/index.ts"
+    "test-SDK": "esrun test/index.ts"
   },
   "eslintConfig": {
     "extends": [
