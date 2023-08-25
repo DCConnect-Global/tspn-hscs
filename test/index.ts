@@ -14,6 +14,7 @@ import axios from "axios";
 import abi from "../src/contracts/abi";
 import bytecode from "../src/contracts/bytecode";
 import {paths} from '../types'
+import { ContractId } from "@hashgraph/sdk";
 
 dotenv.config({path : path.resolve(__dirname, '../.env.local')});
 
@@ -312,11 +313,17 @@ async function getEventsFromMirror(contractId) {
 
             if(!jsonResponse.logs) throw new Error(`result logs from ${contractId.toString()} is null`);
 
+            
             jsonResponse.logs.forEach(log=> {
 
                 if(!log.data) throw new Error(`log data from ${contractId.toString()} is null`);
                 if(!log.topics) throw new Error(`log topics from ${contractId.toString()} is null`);
+                if(!log.bloom) throw new Error(`log bloom from ${contractId.toString()} is null`);
+                if(!log.contract_id) throw new Error(`log contract_id from ${contractId.toString()} is null`);
 
+                // !Note: This is used to transform log from http response of mirror node to ContractLogInfo
+                // const contractLog: ContractLogInfo = new ContractLogInfo({contractId: ContractId.fromString(log.contract_id), bloom: Buffer.from(log.bloom), topics:log.topics.map(topic => Buffer.from(topic)), data:Buffer.from(log.data)})
+                
                 // convert the log.data (uint8Array) to a string
                 const logStringHex = '0x'.concat(Buffer.from(log.data).toString('hex'));
 
