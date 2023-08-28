@@ -18,7 +18,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "create-HCS-topic" : "esrun scripts/create-HCS-topic.ts",
-    "test-solidity": "pnpm hardhat test test/index.ts"
+    "test-solidity": "pnpm hardhat test test/index.ts --tsconfig tsconfig.json"
   },
   "eslintConfig": {
     "extends": [
