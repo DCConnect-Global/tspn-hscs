@@ -1,11 +1,10 @@
-require("@nomicfoundation/hardhat-toolbox");
-require("@nomicfoundation/hardhat-chai-matchers");
-require("@nomiclabs/hardhat-ethers");
-//import dotenv library to access environment variables stored in .env file
-require("dotenv").config();
+import { HardhatUserConfig } from "hardhat/config";
+import "@nomicfoundation/hardhat-toolbox";
+import dotenv from "dotenv";
 
-/** @type import('hardhat/config').HardhatUserConfig */
-module.exports = {
+dotenv.config({path : '.env.local'});
+
+const config: HardhatUserConfig = {
     mocha: {
       timeout: 3600000,
     },
@@ -27,8 +26,10 @@ module.exports = {
         //the Hedera testnet account ECDSA private
         //the public address for the account is derived from the private key
         accounts: [
-          process.env.TESTNET_OPERATOR_PRIVATE_KEY,
+          process.env.TESTNET_OPERATOR_PRIVATE_KEY ?? '',
         ],
       },
     },
   };
+
+export default config;
