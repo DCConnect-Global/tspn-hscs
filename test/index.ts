@@ -1,17 +1,10 @@
-import hre from "hardhat";
 import { expect } from "chai";
 import { contractExecuteCall, contractQueryCall, deployContract, getBalance } from "./utils";
-import { HardhatEthersSigner } from "@nomicfoundation/hardhat-ethers/signers";
 
 describe("Hedera RPC Test", function () {
 let contractAddress: string;
-let signers: HardhatEthersSigner[];
 const spDid = "did:televerse"; 
 const topicId="123";
-
-  before(async function () {
-    signers = await hre.ethers.getSigners();
-  });
 
   it("should be able to get the account balance", async function () {
     const balance = await getBalance();
@@ -20,7 +13,7 @@ const topicId="123";
 
   it("should be able to deploy a contract", async function () {
     contractAddress = await deployContract();
-    expect(contractAddress).to.not.be.null;
+    expect(contractAddress).to.not.equal(null);
   });
 
   describe("contractFunctionCall", function () {
