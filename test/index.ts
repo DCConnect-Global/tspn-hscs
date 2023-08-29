@@ -4,7 +4,7 @@ import { contractExecuteCall, contractQueryCall, deployContract, getBalance } fr
 describe("Hedera RPC Test", function () {
 let contractAddress: string;
 const spDid = "did:televerse"; 
-const topicId="123";
+const topicId="0.0.2982023";
 
   it("should be able to get the account balance", async function () {
     const balance = await getBalance();
