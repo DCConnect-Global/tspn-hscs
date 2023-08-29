@@ -9,7 +9,7 @@ contract CommercialDAO {
     event SpDidSet(address indexed _address, string _spDid);
     event TopicIdSet(address indexed _address, string _topicId);
 
-    // TODO: Should inherit from Ownable to restrict only constract owner can insert SpDid or not
+    // TODO: Should inherit from Ownable to restrict only contract owner can insert SpDid or not
     // constructor() public {
     //     // Constructor code
     // }
