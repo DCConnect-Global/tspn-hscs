@@ -19,6 +19,9 @@ const client = Client.forTestnet();
  */
 async function main() {
 
+  const spDid = "did:televerse"; 
+  const topicId ="0.0.2982023";
+
     if (!process.env.OPERATOR_ID || !process.env.OPERATOR_KEY) {
         throw new Error('OPERATOR_ID and OPERATOR_KEY must be set in .env.local');
     }
@@ -43,14 +46,14 @@ async function main() {
         const contractId = await deployContract(client);
 
         // call the contract's setSpDid function
-        await executeSetSpDidMessage(client, contractId, operatorSolidityAddress ,'did:dcconnect:1');
+        await executeSetSpDidMessage(client, contractId, operatorSolidityAddress ,spDid);
         // query the contract's getSpDid function
         await queryGetSpDidMessage(client, contractId, operatorSolidityAddress);
         // call the contract's getSpDid function
         await executeGetSpDidMessage(client, contractId, operatorSolidityAddress);
 
         // call the contract's setTopicId function - 0.10.1 as dummy topic id
-        await executeSetTopicIdMessage(client,contractId, operatorSolidityAddress, '0.10.1');
+        await executeSetTopicIdMessage(client,contractId, operatorSolidityAddress, topicId);
         // query the contract's getTopicId function
         await queryGetTopicIdMessage(client,contractId, operatorSolidityAddress);
 

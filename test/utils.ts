@@ -97,6 +97,7 @@ async function deployContract(client: Client) {
  * @returns {Promise<void>}
  */
 async function executeSetSpDidMessage(client: Client, contractId: ContractId, address: string, spDid:string) {
+    console.log(`\nsetSpDid transaction`);
     // generate function call with function name and parameters
     const functionCallAsUint8Array = encodeFunctionParameters('setSpDid',  [address, spDid]);
 
@@ -189,7 +190,7 @@ async function executeGetSpDidMessage(client: Client, contractId: ContractId, ad
  * @returns {Promise<void>}
  */
 async function executeSetTopicIdMessage(client: Client, contractId:ContractId, address:string, topicId:string) {
-
+    console.log(`\nsetTopicId transaction`);
     // generate function call with function name and parameters
     const functionCallAsUint8Array = encodeFunctionParameters('setTopicId',  [address, topicId]);
 
