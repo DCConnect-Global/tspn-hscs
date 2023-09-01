@@ -22,12 +22,6 @@ const abi = [
 		"anonymous": false,
 		"inputs": [
 			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "_address",
-				"type": "address"
-			},
-			{
 				"indexed": false,
 				"internalType": "string",
 				"name": "_topicId",
@@ -57,13 +51,7 @@ const abi = [
 		"type": "function"
 	},
 	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_address",
-				"type": "address"
-			}
-		],
+		"inputs": [],
 		"name": "getTopicId",
 		"outputs": [
 			{
@@ -96,11 +84,6 @@ const abi = [
 	{
 		"inputs": [
 			{
-				"internalType": "address",
-				"name": "_address",
-				"type": "address"
-			},
-			{
 				"internalType": "string",
 				"name": "_topicId",
 				"type": "string"
@@ -131,14 +114,8 @@ const abi = [
 		"type": "function"
 	},
 	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"name": "topicIdList",
+		"inputs": [],
+		"name": "topicId",
 		"outputs": [
 			{
 				"internalType": "string",

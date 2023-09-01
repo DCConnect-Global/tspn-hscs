@@ -4,10 +4,10 @@ pragma solidity >=0.8.9 <0.9.0;
 contract CommercialDAO {
 
     mapping(address => string) public spDidList;
-    mapping(address => string) public topicIdList;
+    string public topicId;
 
     event SpDidSet(address indexed _address, string _spDid);
-    event TopicIdSet(address indexed _address, string _topicId);
+    event TopicIdSet(string _topicId);
 
     // TODO: Should inherit from Ownable to restrict only contract owner can insert SpDid or not
     // constructor() public {
@@ -24,12 +24,12 @@ contract CommercialDAO {
         return spDidList[_address];
     }
 
-    function setTopicId(address _address, string memory _topicId) public {
-        topicIdList[_address] = _topicId;
-        emit TopicIdSet(_address, _topicId);
+    function setTopicId( string memory _topicId) public {
+        topicId = _topicId;
+        emit TopicIdSet(_topicId);
     }
 
-    function getTopicId(address _address) public view returns (string memory) {
-        return topicIdList[_address];
+    function getTopicId() public view returns (string memory) {
+        return topicId;
     }
 }
