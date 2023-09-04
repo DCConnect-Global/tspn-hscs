@@ -36,7 +36,7 @@ const wallet = (await ethers.getSigners())[0];
 //wallet/signer used for signing the contract calls/transactions with this contract
 const commercialDao = await ethers.getContractAt("CommercialDAO", address, wallet);
 //using the smart contract call functions from the contract. 
-const callRes = spDid ? await commercialDao.getSpDid(wallet.address) : await commercialDao.getTopicId(address);
+const callRes = spDid ? await commercialDao.getSpDid(wallet.address) : await commercialDao.getTopicId();
 
 console.log(`Contract call result: ${callRes}`);
 
@@ -50,7 +50,7 @@ const contractExecuteCall = async (address: string, param:string, spDid: boolean
     //wallet/signer used for signing the contract calls/transactions with this contract
     const commercialDao = await ethers.getContractAt("CommercialDAO", address, wallet);
   
-    const updateTx = spDid ? await commercialDao.setSpDid(wallet.address, param,{gasLimit: 100_000}) : await commercialDao.setTopicId(address, param,{gasLimit: 100_000})
+    const updateTx = spDid ? await commercialDao.setSpDid(wallet.address, param, {gasLimit: 100_000}) : await commercialDao.setTopicId(param, {gasLimit: 100_000})
     
     console.log(`Updated call result: ${param}`);
   
