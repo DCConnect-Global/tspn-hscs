@@ -185,14 +185,13 @@ async function executeGetSpDidMessage(client: Client, contractId: ContractId, ad
  * Invokes the setTopicId function of the contract
  * @param client
  * @param contractId
- * @param address
  * @param topicId
  * @returns {Promise<void>}
  */
-async function executeSetTopicIdMessage(client: Client, contractId:ContractId, address:string, topicId:string) {
+async function executeSetTopicIdMessage(client: Client, contractId:ContractId, topicId:string) {
     console.log(`\nsetTopicId transaction`);
     // generate function call with function name and parameters
-    const functionCallAsUint8Array = encodeFunctionParameters('setTopicId',  [address, topicId]);
+    const functionCallAsUint8Array = encodeFunctionParameters('setTopicId',  [topicId]);
 
     // execute the transaction calling the set_message contract function
     const transaction = await new ContractExecuteTransaction()
@@ -221,13 +220,12 @@ async function executeSetTopicIdMessage(client: Client, contractId:ContractId, a
  * The getTopicId function doesn't mutate the contract's state, therefore a query can be used
  * @param client
  * @param contractId
- * @param address
  * @returns {Promise<void>}
  */
-async function queryGetTopicIdMessage(client: Client,contractId:ContractId,address:string) {
+async function queryGetTopicIdMessage(client: Client, contractId:ContractId) {
     console.log(`\ngetTopicId Query`);
     // generate function call with function name and parameters
-    const functionCallAsUint8Array = encodeFunctionParameters('getTopicId', [address]);
+    const functionCallAsUint8Array = encodeFunctionParameters('getTopicId', []);
 
     // query the contract
     const contractCall = await new ContractCallQuery()
@@ -245,12 +243,11 @@ async function queryGetTopicIdMessage(client: Client,contractId:ContractId,addre
  * Gets all the events for a given ContractId from a mirror node
  * Note: To particular filtering is implemented here, in practice you'd only want to query for events
  * in a time range or from a given timestamp for example
- * @param client
  * @param contractId
  * @returns {Promise<void>}
  */
 
-async function getEventsFromMirror(client: Client, contractId: ContractId) {
+async function getEventsFromMirror(contractId: ContractId) {
     console.log(`\nGetting event(s) from mirror`);
     console.log(`Waiting 10s to allow transaction propagation to mirror`);
     await delay(10_000);
