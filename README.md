@@ -1,6 +1,22 @@
 # Exemplar for TSPN Hedera and Metamask Integration
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Overview
+
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app) and modified with additional dependencies for smart contract deployment and unit test of contract interaction with Hedera blockchain.
+
+The main task of the smart contract is to emulate `governance DAO` that maintain a curated **list of service provider [DIDs](https://www.w3.org/TR/did-core/#dfn-decentralized-identifiers)** and the **canonical topic id** that is created via [Hedera Consensus Service](https://docs.hedera.com/hedera/sdks-and-apis/sdks/consensus-service/create-a-topic).
+
+In the event of `canonical topic id` in smart contract become invalid, it can be updated to reflect the latest changes on the `canonical topic id` with procedures as followed:
+- Detect **invalid topic id** error message while using `canonical topic id` retrieved from smart contract 
+- Verify that stored `canonical topic id` in smart contract is invalid
+- Report incident to DAO and committee members for further actionable plan
+- Authorized user(s) to create **new topic id** via `Hedera Consensus Service`
+- Authorized user(s) will update `canonical topic id` in smart contract with **newly created topic id** 
+
+> **Note**
+> At the current stage, smart contract does not implement any role-based access control or restrictive access modifier on `update canonical topic id` function for simplicity sake.
+> **This note should be deleted upon the implementation is complete** 
+
 
 > **Note**
 > Incorporates https://github.com/ed-marquez/hedera-example-metamask-counter-dapp.git
