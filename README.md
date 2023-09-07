@@ -29,7 +29,7 @@ In the event of `canonical topic id` in smart contract become invalid, it can be
 - Install [Node.js](https://nodejs.org/en/download) preferably via `nvm` 
 - Install [pnpm](https://pnpm.io/installation) preferably with `corepack`
 - At root project directory, run `pnpm i` to install necessary project dependencies.
-- At root project directory, copy `.env.example` and rename to `.env.local`. Fill in the environment variable as [shown here](https://docs.hedera.com/hedera/tutorials/smart-contracts/hscs-workshop/setup#step-b2-operator-account).
+- At root project directory, copy `.env.example` and rename to `.env.local`. Fill in the environment variable as [shown here](https://docs.hedera.com/hedera/tutorials/smart-contracts/hscs-workshop/setup#step-b2-operator-account). The only exception is `HEDERA_TOPIC_ID` whereas you will need to comment it out and run `pnpm create-HCS-topic` upon filling in all the other environment variables. It should generate a valid topic id and overwrite `HEDERA_TOPIC_ID` in `.env.local`
 
 ## Scripts
 
