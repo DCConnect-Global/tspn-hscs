@@ -13,13 +13,13 @@ In the event of `canonical topic id` in smart contract become invalid, it can be
 - Authorized user(s) to create **new topic id** via `Hedera Consensus Service`
 - Authorized user(s) will update `canonical topic id` in smart contract with **newly created topic id** 
 
-> **Note**
-> At the current stage, smart contract does not implement any role-based access control or restrictive access modifier on `update canonical topic id` function for simplicity sake.
-> **This note should be deleted upon the implementation is complete** 
-
 > **Important**
 > Any changes in smart contract (`.sol`) have to be compiled in  [Remix - Ethereum IDE](https://remix.ethereum.org/) with compiler that is supported by [Hedera Smart Contract Service](https://docs.hedera.com/hedera/sdks-and-apis/sdks/smart-contracts/create-a-smart-contract).
 > Upon successful compilation, copy `abi` and `bytecode` from **Remix** to `abi.ts` and `bytecode.ts` in **contracts** folder respectively.
+
+> **Note**
+> At the current stage, smart contract does not implement any role-based access control or restrictive access modifier on `update canonical topic id` function for simplicity sake.
+> **This note should be deleted upon the implementation is complete** 
 
 > **Note**
 > Incorporates https://github.com/ed-marquez/hedera-example-metamask-counter-dapp.git
