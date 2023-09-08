@@ -19,9 +19,9 @@ const config: HardhatUserConfig = {
       },
     },
     //this specifies which network should be used when running Hardhat tasks
-    defaultNetwork: "testnet",
+    // defaultNetwork: "hedera_testnet",
     networks: {
-      testnet: {
+      hedera_testnet: {
         //HashIO testnet endpoint from the TESTNET_ENDPOINT variable in the project .env the file
         url: process.env.TESTNET_ENDPOINT,
         //the Hedera testnet account ECDSA private
