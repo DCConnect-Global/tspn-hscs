@@ -1,13 +1,13 @@
 import {
     Client,
     PrivateKey,
-    AccountId, Hbar, TopicInfoQuery, 
+    AccountId, Hbar, TopicInfoQuery 
 } from "@hashgraph/sdk";
 
 
 import dotenv from "dotenv";
 import path from "path";
-import { deployContract, executeGetSpDidMessage, executeSetSpDidMessage, executeSetTopicIdMessage, getEventsFromMirror, queryGetSpDidMessage, queryGetTopicIdMessage } from "./utils";
+import { ServiceProvider, deployContract, executeGetMemberMessage, executeGrantMembershipMessage, executeSetTopicIdMessage, getEventsFromMirror, queryGetMemberMessage, queryGetTopicIdMessage } from "./utils";
 
 
 dotenv.config({path : path.resolve(__dirname, '../.env.local')});
@@ -51,12 +51,19 @@ async function main() {
         // deploy the contract to Hedera from bytecode
         const contractId = await deployContract(client);
 
+        const newServiceProvider: ServiceProvider = {
+            _address: operatorSolidityAddress,
+            _name: 'Televerse Test #1',
+            _did: spDid,
+            _nonce: 0
+        }
+
         // call the contract's setSpDid function
-        await executeSetSpDidMessage(client, contractId, operatorSolidityAddress ,spDid);
+        await executeGrantMembershipMessage(client, contractId, newServiceProvider);
         // query the contract's getSpDid function
-        await queryGetSpDidMessage(client, contractId, operatorSolidityAddress);
+        await queryGetMemberMessage(client, contractId, spDid);
         // call the contract's getSpDid function
-        await executeGetSpDidMessage(client, contractId, operatorSolidityAddress);
+        await executeGetMemberMessage(client, contractId, spDid);
 
         // call the contract's setTopicId function with valid topic id set in .env.local
         await executeSetTopicIdMessage(client,contractId, topicId);

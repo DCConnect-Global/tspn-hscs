@@ -1,10 +1,10 @@
 
 import {
     Client,
-    ContractCreateTransaction, ContractExecuteTransaction, ContractCallQuery, 
+    ContractExecuteTransaction, ContractCallQuery, 
     ContractLogInfo,
-    FileCreateTransaction,
     ContractId,
+    ContractCreateFlow,
 } from "@hashgraph/sdk";
 
 import { Interface } from "@ethersproject/abi";
@@ -15,6 +15,12 @@ import axios from "axios";
 
 type ContractsResultLog = paths['/api/v1/contracts/results/logs']['get']['responses'][200]["content"]["application/json"]
 
+interface ServiceProvider {
+    _address: string;
+    _name: string;
+    _did: string;
+    _nonce: number;
+}
 
 interface LogStruct {
     topics: Array<string>; 
@@ -36,48 +42,14 @@ async function deployContract(client: Client) {
 
     if(!client.operatorPublicKey) throw new Error(`client.operatorPublicKey is null`);
 
-    // Create a file on Hedera which contains the contact bytecode.
-    // Note: The contract bytecode **must** be hex encoded, it should not
-    // be the actual data the hex represents
-    const fileTransactionResponse = await new FileCreateTransaction()
-        .setKeys([client.operatorPublicKey])
-        .setContents(bytecode)
-        .execute(client);
+    const contractCreateTx = new ContractCreateFlow()
+    .setGas(500_000)
+    .setBytecode(bytecode);
 
-    // // Fetch the receipt for transaction that created the file
-    const fileReceipt = await fileTransactionResponse.getReceipt(client);
-
-    // The file ID is located on the transaction receipt
-    const fileId = fileReceipt.fileId;
-
-    if(!fileId) throw new Error(`fieldId is null`);
-
-    // Check file content via fileId
-    // const fileContent = await new FileContentsQuery({fileId}).execute(client);
-    // console.log(fileContent.toString());
-
-    // Comment out since contract doesn't require parameter for the time being
-    // TODO: Uncomment if constructor parameters are required
-    // get the constructor parameter
-    // .slice(2) to remove leading '0x'
-    // const constructParameterAsHexString = abiInterface.encodeDeploy([constructMessage]).slice(2);
-    // convert to a Uint8Array
-    // const constructorParametersAsUint8Array = Buffer.from(constructParameterAsHexString, 'hex');
-
-    // Create the contract
-    const contractTransaction = await new ContractCreateTransaction()
-        // Set the parameters that should be passed to the contract constructor
-        // using the output from the ethers.js library
-        // .setConstructorParameters(constructorParametersAsUint8Array)
-        // Set gas to create the contract
-        .setGas(500_000)
-        // The contract bytecode must be set to the file ID containing the contract bytecode
-        .setBytecodeFileId(fileId)
-
-    const contractTransactionResponse = await contractTransaction.execute(client);
+    const contractCreateTxResponse = await contractCreateTx.execute(client);
 
     // Fetch the receipt for the transaction that created the contract
-    const contractReceipt = await contractTransactionResponse.getReceipt(client);
+    const contractReceipt = await contractCreateTxResponse.getReceipt(client);
 
     // The contract ID is located on the transaction receipt
     const contractId = contractReceipt.contractId;
@@ -89,23 +61,23 @@ async function deployContract(client: Client) {
 }
 
 /**
- * Invokes the setSpDid function of the contract
+ * Invokes the grantMembership function of the contract
  * @param client
  * @param contractId
  * @param address
- * @param spDid
+ * @param serviceProvider
  * @returns {Promise<void>}
  */
-async function executeSetSpDidMessage(client: Client, contractId: ContractId, address: string, spDid:string) {
-    console.log(`\nsetSpDid transaction`);
+async function executeGrantMembershipMessage(client: Client, contractId: ContractId | string, serviceProvider: ServiceProvider): Promise<void> {
+    console.log(`\ngrantMembership transaction`);
     // generate function call with function name and parameters
-    const functionCallAsUint8Array = encodeFunctionParameters('setSpDid',  [address, spDid]);
+    const functionCallAsUint8Array = encodeFunctionParameters('grantMembership',  [serviceProvider]);
 
     // execute the transaction calling the set_message contract function
     const transaction = await new ContractExecuteTransaction()
         .setContractId(contractId)
         .setFunctionParameters(functionCallAsUint8Array)
-        .setGas(100_000)
+        .setGas(200_000)
         .execute(client);
 
     // get the receipt for the transaction
@@ -124,17 +96,17 @@ async function executeSetSpDidMessage(client: Client, contractId: ContractId, ad
 }
 
 /**
- * Invokes the getSpDid function of the contract using a query.
- * The getSpDid function doesn't mutate the contract's state, therefore a query can be used
+ * Invokes the getMember function of the contract using a query.
+ * The getMember function doesn't mutate the contract's state, therefore a query can be used
  * @param client
  * @param contractId
- * @param address
+ * @param did
  * @returns {Promise<void>}
  */
-async function queryGetSpDidMessage(client: Client, contractId: ContractId, address: string) {
-    console.log(`\ngetSpDid Query`);
+async function queryGetMemberMessage(client: Client, contractId: ContractId | string, did: string) {
+    console.log(`\ngetMember Query`);
     // generate function call with function name and parameters
-    const functionCallAsUint8Array = encodeFunctionParameters('getSpDid', [address]);
+    const functionCallAsUint8Array = encodeFunctionParameters('getMember', [did]);
 
     // query the contract
     const contractCall = await new ContractCallQuery()
@@ -143,25 +115,25 @@ async function queryGetSpDidMessage(client: Client, contractId: ContractId, addr
         .setGas(100_000)
         .execute(client);
 
-    let results = abiInterface.decodeFunctionResult('getSpDid', contractCall.bytes);
-    console.table(results);
+    let results = abiInterface.decodeFunctionResult('getMember', contractCall.bytes);
+    console.log(results);
 }
 
 /**
- * Invokes the getSpDid function of the contract using a transaction and uses the resulting record to determine
+ * Invokes the getMember function of the contract using a transaction and uses the resulting record to determine
  * the returned value from the function.
- * Note: The getSpDid function doesn't mutate the contract's state, therefore a query could be used, but this shows how to
+ * Note: The getMember function doesn't mutate the contract's state, therefore a query could be used, but this shows how to
  * process return values from a contract function that does mutate contract state using a TransactionRecord
  * @param client
  * @param contractId
- * @param address
+ * @param did
  * @returns {Promise<void>}
  */
-async function executeGetSpDidMessage(client: Client, contractId: ContractId, address:string) {
-    console.log(`\ngetSpDid transaction`);
+async function executeGetMemberMessage(client: Client, contractId: ContractId | string, did:string) {
+    console.log(`\ngetMember transaction`);
 
     // generate function call with function name and parameters
-    const functionCallAsUint8Array = encodeFunctionParameters('getSpDid', [address]);
+    const functionCallAsUint8Array = encodeFunctionParameters('getMember', [did]);
 
     // doing the same with a transaction and a record
     const transaction = await new ContractExecuteTransaction()
@@ -177,8 +149,8 @@ async function executeGetSpDidMessage(client: Client, contractId: ContractId, ad
 
     // the result of the function call is in record.contractFunctionResult.bytes
     // let`s parse it using ethers.js
-    const results = abiInterface.decodeFunctionResult('getSpDid', record.contractFunctionResult.bytes);
-    console.table(results);
+    const results = abiInterface.decodeFunctionResult('getMember', record.contractFunctionResult.bytes);
+    console.log(results);
 }
 
 /**
@@ -188,7 +160,7 @@ async function executeGetSpDidMessage(client: Client, contractId: ContractId, ad
  * @param topicId
  * @returns {Promise<void>}
  */
-async function executeSetTopicIdMessage(client: Client, contractId:ContractId, topicId:string) {
+async function executeSetTopicIdMessage(client: Client, contractId:ContractId | string, topicId:string) {
     console.log(`\nsetTopicId transaction`);
     // generate function call with function name and parameters
     const functionCallAsUint8Array = encodeFunctionParameters('setTopicId',  [topicId]);
@@ -222,7 +194,7 @@ async function executeSetTopicIdMessage(client: Client, contractId:ContractId, t
  * @param contractId
  * @returns {Promise<void>}
  */
-async function queryGetTopicIdMessage(client: Client, contractId:ContractId) {
+async function queryGetTopicIdMessage(client: Client, contractId: ContractId | string) {
     console.log(`\ngetTopicId Query`);
     // generate function call with function name and parameters
     const functionCallAsUint8Array = encodeFunctionParameters('getTopicId', []);
@@ -247,7 +219,7 @@ async function queryGetTopicIdMessage(client: Client, contractId:ContractId) {
  * @returns {Promise<void>}
  */
 
-async function getEventsFromMirror(contractId: ContractId) {
+async function getEventsFromMirror(contractId: ContractId | string) {
     console.log(`\nGetting event(s) from mirror`);
     console.log(`Waiting 10s to allow transaction propagation to mirror`);
     await delay(10_000);
@@ -287,7 +259,7 @@ async function getEventsFromMirror(contractId: ContractId) {
                 const event = abiInterface.parseLog(logRequest);
 
                 // output the from address stored in the event
-                console.table(event.args)
+                console.log(event.args)
             });
 
         })
@@ -329,14 +301,15 @@ function getTransactionLogDetails (log: ContractLogInfo){
     const event = abiInterface.parseLog(logRequest);
     
     // output the from address stored in the event
-    console.table(event.args)
+    console.log(event.args)
 }
 
 export {
+    ServiceProvider,
     deployContract,
-    executeSetSpDidMessage,
-    queryGetSpDidMessage,
-    executeGetSpDidMessage,
+    executeGrantMembershipMessage,
+    queryGetMemberMessage,
+    executeGetMemberMessage,
     executeSetTopicIdMessage,
     queryGetTopicIdMessage,
     getEventsFromMirror
