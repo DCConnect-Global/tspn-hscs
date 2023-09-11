@@ -1,12 +1,21 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.8.9 <0.9.0;
+pragma solidity 0.8.21;
+
 
 contract CommercialDAO {
 
-    mapping(address => string) public spDidList;
+    struct ServiceProvider {
+        address _address;
+        string _name;
+        string _did;
+        uint8 _nonce;
+    }
+
+    // did -> ServiceProvider
+    mapping(string => ServiceProvider) public serviceProviderList;
     string public topicId;
 
-    event SpDidSet(address indexed _address, string _spDid);
+    event ServiceProviderJoined(ServiceProvider _serviceProvider);
     event TopicIdSet(string _topicId);
 
     // TODO: Should inherit from Ownable to restrict only contract owner can insert SpDid or not
@@ -14,14 +23,21 @@ contract CommercialDAO {
     //     // Constructor code
     // }
 
-    function setSpDid(address _address, string memory _spDid) public {
-        spDidList[_address] = _spDid;
-        emit SpDidSet(_address, _spDid);
+    function grantMembership(ServiceProvider memory serviceProvider) public {
+        serviceProvider._nonce = 1;
+        serviceProviderList[serviceProvider._did] = serviceProvider;
+        ServiceProvider memory newServiceProvider = serviceProviderList[serviceProvider._did];
+        emit ServiceProviderJoined(newServiceProvider);
     }
 
     // TODO: Determine do we use getter function to make access modifier of public field to be private instead
-    function getSpDid(address _address) public view returns (string memory) {
-        return spDidList[_address];
+    function getMember(string memory _did) public view returns (ServiceProvider memory) {
+        require(serviceProviderList[_did]._nonce != 0, "Member does not exist");
+        return serviceProviderList[_did];
+    }
+
+    function  isMember(string memory _did) public view returns (bool) {
+        return serviceProviderList[_did]._nonce != 0;
     }
 
     function setTopicId( string memory _topicId) public {
